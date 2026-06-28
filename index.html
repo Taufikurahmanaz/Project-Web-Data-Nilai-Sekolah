@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pengolahan Nilai Siswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#0B1315',
+                            card: '#122022',
+                            emerald: '#059669',
+                            lightemerald: '#10B981',
+                            glow: '#34D399'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 font-sans min-h-screen">
+
+    <div id="pageWrapper" class="max-w-6xl mx-auto px-4 py-6 transition-all duration-300">
+        <nav class="flex flex-col md:flex-row justify-between items-start gap-4 border-b border-slate-700 pb-6 mb-4">
+            <div>
+                <p class="text-sm uppercase tracking-[0.4em] text-slate-500">SMKIT Fitrah Hanniah</p>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Website Sekolah & Sistem Input Nilai Siswa</h1>
+                <p class="text-slate-400 mt-1">Dashboard nilai siswa, informasi sekolah, dan menu login sederhana.</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div id="desktopNav" class="hidden md:flex flex-wrap items-center gap-3">
+                    <a href="#dashboard" class="px-4 py-2 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800 transition">Dashboard</a>
+                    <a href="#about" class="px-4 py-2 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800 transition">Tentang</a>
+                    <span id="modeBadge" class="rounded-full bg-slate-800 px-3 py-2 text-xs uppercase tracking-[0.25em] text-emerald-300">Desktop</span>
+                    <button id="modeToggle" onclick="toggleViewMode()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 transition">Mode Mobile</button>
+                    <button onclick="openLogin()" class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold transition">Login</button>
+                </div>
+                <button id="navBurger" onclick="toggleBurgerMenu()" class="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900 p-3 text-slate-200 hover:bg-slate-800 transition md:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
+                        <path fill-rule="evenodd" d="M4.5 6.75A.75.75 0 015.25 6h13.5a.75.75 0 010 1.5H5.25a.75.75 0 01-.75-.75zM4.5 11.25a.75.75 0 01.75-.75h13.5a.75.75 0 010 1.5H5.25a.75.75 0 01-.75-.75zM5.25 16.5a.75.75 0 000 1.5h13.5a.75.75 0 000-1.5H5.25z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <div id="mobileNav" class="md:hidden hidden mb-6 rounded-3xl border border-slate-700 bg-slate-900/95 p-4 shadow-xl">
+            <div class="flex flex-col gap-3">
+                <a href="#dashboard" class="block rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-200 hover:bg-slate-800 transition">Dashboard</a>
+                <a href="#about" class="block rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-200 hover:bg-slate-800 transition">Tentang</a>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center justify-between gap-3 rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3">
+                        <span class="text-slate-200">Mode</span>
+                        <button id="mobileModeToggle" onclick="toggleViewMode()" class="rounded-2xl bg-slate-800 px-3 py-2 text-slate-200 hover:bg-slate-700 transition">Mode Mobile</button>
+                    </div>
+                    <button onclick="openLogin()" class="rounded-2xl bg-emerald-500 px-4 py-3 text-slate-950 font-semibold hover:bg-emerald-400 transition">Login</button>
+                </div>
+            </div>
+        </div>
+
+        <section class="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-8 mb-8" id="dashboard">
+            <div class="bg-slate-900/90 border border-slate-700 rounded-3xl p-8 shadow-2xl shadow-slate-950/30">
+                <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <p class="text-sm uppercase tracking-[0.3em] text-emerald-400">Sistem Informasi Akademik</p>
+                        <h2 class="text-2xl font-bold text-white">Analisis Nilai Siswa 30 Orang</h2>
+                        <p class="text-slate-400 mt-2 max-w-2xl">Masukkan nilai siswa pada tabel di samping untuk menghitung rata-rata, nilai tertinggi, dan nilai terendah secara otomatis.</p>
+                    </div>
+                    <button onclick="generateRandomData()" class="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-400">Acak Nilai</button>
+                </div>
+
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="rounded-3xl border border-slate-700 bg-slate-950/70 p-6 text-center">
+                        <p class="text-sm uppercase tracking-[0.2em] text-slate-400">Rata-rata</p>
+                        <p id="statRata" class="mt-4 text-4xl font-black text-emerald-400">0.00</p>
+                    </div>
+                    <div class="rounded-3xl border border-slate-700 bg-slate-950/70 p-6 text-center">
+                        <p class="text-sm uppercase tracking-[0.2em] text-slate-400">Tertinggi</p>
+                        <p id="statTinggi" class="mt-4 text-4xl font-black text-white">0</p>
+                    </div>
+                    <div class="rounded-3xl border border-slate-700 bg-slate-950/70 p-6 text-center">
+                        <p class="text-sm uppercase tracking-[0.2em] text-slate-400">Terendah</p>
+                        <p id="statRendah" class="mt-4 text-4xl font-black text-rose-400">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-6">
+                <div class="rounded-3xl border border-slate-700 bg-slate-900/90 p-6 shadow-xl">
+                    <h3 class="text-xl font-bold text-white">Login Sekolah</h3>
+                    <p class="mt-2 text-slate-400">Gunakan menu login untuk masuk ke area guru atau staf. Akun demo: admin / sekolah123</p>
+                    <button onclick="openLogin()" class="mt-5 w-full rounded-2xl bg-emerald-500 px-4 py-3 text-slate-950 font-semibold hover:bg-emerald-400 transition">Buka Form Login</button>
+                </div>
+
+                <div class="rounded-3xl border border-slate-700 bg-slate-900/90 p-6 shadow-xl">
+                    <h3 class="text-xl font-bold text-white">Tentang Sekolah</h3>
+                    <ul class="mt-4 space-y-3 text-slate-400 text-sm">
+                        <li class="flex items-start gap-3"><span class="mt-1 h-2.5 w-2.5 rounded-full bg-emerald-400"></span> Kurikulum Bahasa Inggris, Matematika, dan Teknologi.</li>
+                        <li class="flex items-start gap-3"><span class="mt-1 h-2.5 w-2.5 rounded-full bg-emerald-400"></span> Fokus pengembangan kompetensi digital siswa.</li>
+                        <li class="flex items-start gap-3"><span class="mt-1 h-2.5 w-2.5 rounded-full bg-emerald-400"></span> Nilai disusun dalam struktur data Array untuk latihan algoritma.</li>
+                    </ul>
+                </div>
+            </aside>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="rounded-3xl border border-slate-700 bg-slate-900/90 p-6 shadow-xl">
+                <p class="text-sm uppercase tracking-[0.3em] text-emerald-400">Mode Pintar</p>
+                <h3 class="text-xl font-bold text-white mt-3">Dua Mode Tampilan</h3>
+                <p class="mt-3 text-slate-400 leading-relaxed">Gunakan tombol mode untuk berganti ke tampilan desktop lebar atau preview mobile yang lebih ringkas.</p>
+            </div>
+            <div class="rounded-3xl border border-slate-700 bg-slate-900/90 p-6 shadow-xl">
+                <p class="text-sm uppercase tracking-[0.3em] text-emerald-400">UI Modern</p>
+                <h3 class="text-xl font-bold text-white mt-3">Antarmuka Sekolah</h3>
+                <p class="mt-3 text-slate-400 leading-relaxed">Desain lebih bersih dengan panel kaca, ikon, dan layout responsif agar terlihat profesional.</p>
+            </div>
+            <div class="rounded-3xl border border-slate-700 bg-slate-900/90 p-6 shadow-xl">
+                <p class="text-sm uppercase tracking-[0.3em] text-emerald-400">Fitur Lengkap</p>
+                <h3 class="text-xl font-bold text-white mt-3">Nilai & Excel</h3>
+                <p class="mt-3 text-slate-400 leading-relaxed">Ekspor data siswa langsung ke Excel, hitung statistik nilai, dan tampilkan dummy siswa lengkap.</p>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8" id="about">
+            <div class="bg-slate-900/90 border border-slate-700 rounded-3xl p-8 shadow-2xl">
+                <h2 class="text-2xl font-bold text-white mb-4">Program Nilai Siswa dengan Array</h2>
+                <p class="text-slate-400 leading-relaxed mb-4">Web ini dirancang sebagai contoh aplikasi sekolah yang menampilkan proses pengolahan nilai siswa menggunakan struktur data <strong>Array</strong>. Anda dapat mengisi nilai secara manual, atau mengacak nilai secara otomatis untuk simulasi.</p>
+                <p class="text-slate-400 leading-relaxed">Penjelasan singkat:</p>
+                <ul class="mt-4 space-y-3 text-slate-300 list-disc list-inside">
+                    <li>Data disimpan dalam array dengan 30 elemen.</li>
+                    <li>Perulangan <code class="bg-slate-800 px-2 py-1 rounded">for</code> digunakan untuk hitung jumlah, rata-rata, min, dan max.</li>
+                    <li>Nilai tertinggi & terendah dihitung secara langsung dari isi array.</li>
+                </ul>
+            </div>
+
+            <div class="rounded-3xl border border-slate-700 bg-slate-900/90 p-6 shadow-xl">
+                <h3 class="text-xl font-bold text-white mb-4">Cara Menggunakan</h3>
+                <ol class="list-decimal list-inside space-y-3 text-slate-300 text-sm">
+                    <li>Tekan tombol <strong>Acak Nilai</strong> untuk mengisi 30 nilai siswa secara otomatis.</li>
+                    <li>Klik <strong>Hitung Statistik</strong> untuk melihat rata-rata dan nilai ekstrim.</li>
+                    <li>Buka menu <strong>Login</strong> untuk mencoba fitur akses pengguna.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 gap-8">
+            <div class="rounded-3xl border border-slate-700 bg-slate-900/90 p-6 shadow-xl">
+                <h3 class="text-xl font-bold text-white mb-3">Tabel Input Nilai</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3" id="arrayContainer"></div>
+                <button onclick="hitungStatistik()" class="mt-6 w-full rounded-2xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 hover:bg-emerald-400 transition">Hitung Statistik</button>
+            </div>
+        </div>
+
+        <div class="mt-8 rounded-3xl border border-slate-700 bg-slate-900/90 p-6 shadow-xl">
+            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-white">Daftar Siswa Dummy</h3>
+                    <p class="text-slate-400 mt-2">Data siswa lengkap dengan nomor induk untuk unduhan Excel.</p>
+                </div>
+                <button onclick="downloadExcel()" class="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 hover:bg-emerald-400 transition">Unduh ke Excel</button>
+            </div>
+            <div class="mt-6 overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-700 text-sm text-slate-200">
+                    <thead class="bg-slate-950 text-slate-400">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold">No</th>
+                            <th class="px-4 py-3 text-left font-semibold">NIS</th>
+                            <th class="px-4 py-3 text-left font-semibold">Nama Siswa</th>
+                            <th class="px-4 py-3 text-left font-semibold">Kelas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable" class="divide-y divide-slate-800 bg-slate-900"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
+        <div class="w-full max-w-md rounded-3xl border border-slate-700 bg-slate-900/95 shadow-2xl">
+            <div class="flex items-start justify-between border-b border-slate-700 px-6 py-5">
+                <div>
+                    <p class="text-sm uppercase tracking-[0.3em] text-emerald-400">Area Login</p>
+                    <h2 class="text-2xl font-bold text-white">Masuk ke Akun Sekolah</h2>
+                </div>
+                <button onclick="closeLogin()" class="text-slate-400 hover:text-white text-3xl leading-none">&times;</button>
+            </div>
+            <form onsubmit="handleLogin(event)" class="px-6 py-6 space-y-5">
+                <div>
+                    <label class="text-sm font-medium text-slate-300">Username</label>
+                    <input id="loginUser" type="text" placeholder="admin" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus:border-emerald-400 outline-none" required>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-300">Password</label>
+                    <input id="loginPass" type="password" placeholder="sekolah123" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus:border-emerald-400 outline-none" required>
+                </div>
+                <p id="loginMessage" class="text-sm text-rose-400 hidden"></p>
+                <button type="submit" class="w-full rounded-2xl bg-emerald-500 px-4 py-3 text-slate-950 font-semibold hover:bg-emerald-400 transition">Masuk</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const jumlahSiswa = 30;
+        let currentMode = 'desktop';
+
+        const dummyStudents = [
+            { nis: '101001', name: 'Aulia Ramadhani', class: 'XI IPA 1' },
+            { nis: '101002', name: 'Bagas Pratama', class: 'XI IPA 1' },
+            { nis: '101003', name: 'Chandra Wibowo', class: 'XI IPS 2' },
+            { nis: '101004', name: 'Dewi Anggraini', class: 'XI IPS 2' },
+            { nis: '101005', name: 'Eka Salsabila', class: 'XI IPA 2' },
+            { nis: '101006', name: 'Fajar Nugraha', class: 'XI IPA 2' },
+            { nis: '101007', name: 'Gina Kurnia', class: 'XI IPS 1' },
+            { nis: '101008', name: 'Hadi Santoso', class: 'XI IPS 1' },
+            { nis: '101009', name: 'Indah Lestari', class: 'XI BAHASA' },
+            { nis: '101010', name: 'Joko Prasetyo', class: 'XI BAHASA' },
+            { nis: '101011', name: 'Karina Melati', class: 'X MIPA 1' },
+            { nis: '101012', name: 'Lukman Hakim', class: 'X MIPA 1' },
+            { nis: '101013', name: 'Maya Setyaningrum', class: 'X MIPA 2' },
+            { nis: '101014', name: 'Nanda Syahputra', class: 'X MIPA 2' },
+            { nis: '101015', name: 'Oka Wiratma', class: 'X IPS 1' },
+            { nis: '101016', name: 'Putri Amalia', class: 'X IPS 1' },
+            { nis: '101017', name: 'Qori Putra', class: 'X IPS 2' },
+            { nis: '101018', name: 'Rina Marlina', class: 'X IPS 2' },
+            { nis: '101019', name: 'Satria Bima', class: 'X BAHASA' },
+            { nis: '101020', name: 'Taya Kusuma', class: 'X BAHASA' },
+            { nis: '101021', name: 'Umi Hasanah', class: 'X MIPA 3' },
+            { nis: '101022', name: 'Vino Kurniawan', class: 'X MIPA 3' },
+            { nis: '101023', name: 'Wulan Ayu', class: 'X IPS 3' },
+            { nis: '101024', name: 'Xavier Lie', class: 'X IPS 3' },
+            { nis: '101025', name: 'Yasmin Farah', class: 'X BAHASA' },
+            { nis: '101026', name: 'Zainal Abidin', class: 'X BAHASA' },
+            { nis: '101027', name: 'Aldo Pratama', class: 'X MIPA 4' },
+            { nis: '101028', name: 'Bella Citra', class: 'X MIPA 4' },
+            { nis: '101029', name: 'Cahaya Wulan', class: 'XI MIPA 3' },
+            { nis: '101030', name: 'Dimas Irwansyah', class: 'XI MIPA 3' }
+        ];
+
+        function initForm() {
+            const container = document.getElementById('arrayContainer');
+            container.innerHTML = '';
+            for (let i = 1; i <= jumlahSiswa; i++) {
+                container.innerHTML += `
+                    <div class="flex flex-col bg-slate-950/90 p-3 rounded-3xl border border-slate-700">
+                        <label class="text-[11px] text-slate-400 font-semibold mb-2">Siswa ${i}</label>
+                        <input type="number" id="nilai_${i}" min="0" max="100" value="0" class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-3 py-2 text-center font-semibold text-emerald-300 focus:outline-none focus:border-emerald-400 transition" />
+                    </div>
+                `;
+            }
+            renderStudentTable();
+        }
+
+        function renderStudentTable() {
+            const body = document.getElementById('studentTable');
+            body.innerHTML = dummyStudents.map((student, index) => `
+                <tr class="hover:bg-slate-800/60">
+                    <td class="px-4 py-3">${index + 1}</td>
+                    <td class="px-4 py-3">${student.nis}</td>
+                    <td class="px-4 py-3">${student.name}</td>
+                    <td class="px-4 py-3">${student.class}</td>
+                </tr>
+            `).join('');
+        }
+
+        function setViewMode(mode) {
+            const wrapper = document.getElementById('pageWrapper');
+            const badge = document.getElementById('modeBadge');
+            const toggle = document.getElementById('modeToggle');
+            currentMode = mode;
+
+            const mobileModeBtn = document.getElementById('mobileModeToggle');
+            if (mode === 'mobile') {
+                wrapper.className = 'max-w-[420px] mx-auto px-4 py-6 transition-all duration-300 rounded-[40px] border border-slate-700 bg-slate-950/95 shadow-2xl';
+                badge.innerText = 'Mobile';
+                toggle.innerText = 'Mode Desktop';
+                toggle.classList.remove('bg-slate-800');
+                toggle.classList.add('bg-emerald-500', 'hover:bg-emerald-400');
+                if (mobileModeBtn) mobileModeBtn.innerText = 'Mode Desktop';
+            } else {
+                wrapper.className = 'max-w-6xl mx-auto px-4 py-6 transition-all duration-300';
+                badge.innerText = 'Desktop';
+                toggle.innerText = 'Mode Mobile';
+                toggle.classList.remove('bg-emerald-500', 'hover:bg-emerald-400');
+                toggle.classList.add('bg-slate-800');
+                if (mobileModeBtn) mobileModeBtn.innerText = 'Mode Mobile';
+            }
+        }
+
+        function toggleViewMode() {
+            setViewMode(currentMode === 'desktop' ? 'mobile' : 'desktop');
+        }
+
+        function toggleBurgerMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('hidden');
+        }
+
+        function downloadExcel() {
+            const header = ['No', 'NIS', 'Nama Siswa', 'Kelas'];
+            const rows = dummyStudents.map((student, index) => [index + 1, student.nis, student.name, student.class]);
+            const tableRows = [header, ...rows];
+
+            let excelContent = '<table border="1"><tr>' + header.map(col => `<th>${col}</th>`).join('') + '</tr>';
+            rows.forEach(row => {
+                excelContent += '<tr>' + row.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
+            });
+            excelContent += '</table>';
+
+            const blob = new Blob(['\ufeff', excelContent], { type: 'application/vnd.ms-excel' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'data_siswa_dummy.xls';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function openLogin() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginMessage').classList.add('hidden');
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            const message = document.getElementById('loginMessage');
+
+            if (user === 'admin' && pass === 'sekolah123') {
+                message.classList.remove('hidden', 'text-rose-400');
+                message.classList.add('text-emerald-400');
+                message.innerText = 'Login berhasil! Selamat datang, Admin.';
+                document.querySelector('nav').classList.add('ring-1', 'ring-emerald-500/30');
+                setTimeout(closeLogin, 1200);
+            } else {
+                message.classList.remove('hidden');
+                message.classList.remove('text-emerald-400');
+                message.classList.add('text-rose-400');
+                message.innerText = 'Username atau password salah. Coba lagi.';
+            }
+        }
+
+        function generateRandomData() {
+            for (let i = 1; i <= jumlahSiswa; i++) {
+                const acak = Math.floor(Math.random() * (100 - 50 + 1)) + 50;
+                document.getElementById(`nilai_${i}`).value = acak;
+            }
+            hitungStatistik();
+        }
+
+        function hitungStatistik() {
+            const nilaiArray = [];
+            for (let i = 1; i <= jumlahSiswa; i++) {
+                const val = parseInt(document.getElementById(`nilai_${i}`).value) || 0;
+                nilaiArray.push(val);
+            }
+
+            let total = 0;
+            for (let i = 0; i < nilaiArray.length; i++) {
+                total += nilaiArray[i];
+            }
+            const rataRata = total / jumlahSiswa;
+
+            let tertinggi = nilaiArray[0];
+            let terendah = nilaiArray[0];
+            for (let i = 1; i < nilaiArray.length; i++) {
+                if (nilaiArray[i] > tertinggi) tertinggi = nilaiArray[i];
+                if (nilaiArray[i] < terendah) terendah = nilaiArray[i];
+            }
+
+            document.getElementById('statRata').innerText = rataRata.toFixed(2);
+            document.getElementById('statTinggi').innerText = tertinggi;
+            document.getElementById('statRendah').innerText = terendah;
+        }
+
+        window.onload = () => {
+            initForm();
+            generateRandomData();
+        };
+    </script>
+</body>
+</html>
